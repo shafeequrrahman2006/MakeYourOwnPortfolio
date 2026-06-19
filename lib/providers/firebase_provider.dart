@@ -309,36 +309,24 @@ class FirebaseService {
     }
   }
 
-  Stream<List<PortfolioRequest>> streamRequests() {
-    initialize();
+  Stream<List<PortfolioRequest>> streamRequests() async* {
+    await initialize();
     if (_isMock) {
-      final controller = StreamController<List<PortfolioRequest>>();
-      controller.add(List.from(_mockRequests));
-      
-      final subscription = _mockStreamController.stream.listen((updatedList) {
-        if (!controller.isClosed) {
-          controller.add(updatedList);
-        }
+      yield List.from(_mockRequests);
+      yield* _mockStreamController.stream;
+    } else {
+      yield* _firestore!
+          .collection('portfolio_requests')
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs.map((doc) => PortfolioRequest.fromMap(doc.data())).toList();
       });
-      
-      controller.onCancel = () {
-        subscription.cancel();
-        controller.close();
-      };
-      
-      return controller.stream;
     }
-
-    return _firestore!
-        .collection('portfolio_requests')
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((doc) => PortfolioRequest.fromMap(doc.data())).toList();
-    });
   }
 
   Future<void> updateRequestStatus(String requestId, String status) async {
+    await initialize();
     if (_isMock) {
       final idx = _mockRequests.indexWhere((r) => r.requestId == requestId);
       if (idx != -1) {
@@ -365,6 +353,7 @@ class FirebaseService {
   }
 
   Future<void> deleteRequest(String requestId) async {
+    await initialize();
     if (_isMock) {
       _mockRequests.removeWhere((r) => r.requestId == requestId);
       _emitMockRequests();
