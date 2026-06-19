@@ -2,8 +2,12 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/((?!assets/|.*\\.js|.*\\.json|.*\\.png|.*\\.ico|.*\\.css|.*\\.txt|.*\\.wasm).*)$",
-      "destination": "/index.html"
+      "source": "/((?!build/web/|.*\\.js|.*\\.json|.*\\.png|.*\\.ico|.*\\.css|.*\\.txt|.*\\.wasm).*)$",
+      "destination": "/build/web/index.html"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/build/web/:path*"
     }
   ]
 }
