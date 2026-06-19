@@ -125,7 +125,23 @@ class FirebaseService {
       }
     }
     
-    await _auth!.signInWithEmailAndPassword(email: email, password: password);
+    try {
+      await _auth!.signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      // Auto-register the admin user on the fly if it doesn't exist yet on the live Firebase
+      if ((e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-credential') &&
+          email == 'shafeequrr309@gmail.com' && password == 'Ss@987654') {
+        try {
+          await _auth!.createUserWithEmailAndPassword(email: email, password: password);
+          if (kDebugMode) print('MUOP: Admin user created and signed in successfully.');
+        } catch (signUpError) {
+          if (kDebugMode) print('MUOP: Failed to create admin user: $signUpError');
+          throw e; // Throw original sign-in error
+        }
+      } else {
+        rethrow;
+      }
+    }
   }
 
   Future<void> signOut() async {
