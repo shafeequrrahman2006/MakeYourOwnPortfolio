@@ -1,0 +1,9 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/((?!assets/|.*\\.js|.*\\.json|.*\\.png|.*\\.ico|.*\\.css|.*\\.txt|.*\\.wasm).*)$",
+      "destination": "/index.html"
+    }
+  ]
+}
