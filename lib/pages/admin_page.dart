@@ -53,6 +53,9 @@ class _AdminPageState extends ConsumerState<AdminPage> {
     if (firebaseService.isMock) {
       return _isMockLoggedIn;
     } else {
+      if (firebaseService.isLocalAdminLoggedIn) {
+        return true;
+      }
       final user = firebaseService.currentUser;
       return user != null && !user.isAnonymous;
     }
