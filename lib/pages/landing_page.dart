@@ -7,6 +7,7 @@ import '../widgets/premium_button.dart';
 import '../widgets/stepper/stepper_widget.dart';
 import '../widgets/form_steps/form_steps.dart';
 import '../widgets/glow_background.dart';
+import '../widgets/contact_form.dart';
 
 class LandingPage extends ConsumerStatefulWidget {
   const LandingPage({super.key});
@@ -17,6 +18,7 @@ class LandingPage extends ConsumerStatefulWidget {
 
 class _LandingPageState extends ConsumerState<LandingPage> {
   final GlobalKey _formSectionKey = GlobalKey();
+  final GlobalKey _contactSectionKey = GlobalKey();
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -27,6 +29,17 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   void _scrollToForm() {
     final context = _formSectionKey.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.easeInOutCubic,
+      );
+    }
+  }
+
+  void _scrollToContact() {
+    final context = _contactSectionKey.currentContext;
     if (context != null) {
       Scrollable.ensureVisible(
         context,
@@ -101,6 +114,18 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                           },
                           child: Text(
                             'Admin Portal',
+                            style: TextStyle(
+                              color: MUOPTheme.secondaryText.withOpacity(0.8),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        TextButton(
+                          onPressed: _scrollToContact,
+                          child: Text(
+                            'Contact Us',
                             style: TextStyle(
                               color: MUOPTheme.secondaryText.withOpacity(0.8),
                               fontSize: 13,
@@ -472,6 +497,16 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   ),
                 ),
               ),
+
+              // ==========================================
+              // CONTACT FORM SECTION
+              // ==========================================
+              Container(
+                key: _contactSectionKey,
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 60.0),
+                child: const ContactFormWidget(),
+              ),
+              const SizedBox(height: 40),
 
               // ==========================================
               // FOOTER
