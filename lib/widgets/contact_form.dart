@@ -294,7 +294,6 @@ class _ContactFormWidgetState extends ConsumerState<ContactFormWidget>
         DropdownButtonFormField<String>(
           value: _selectedService,
           dropdownColor: MUOPTheme.cardBg,
-          enabled: !isLoading,
           items: const [
             DropdownMenuItem(
               value: 'Portfolio Development',
@@ -317,13 +316,15 @@ class _ContactFormWidgetState extends ConsumerState<ContactFormWidget>
               child: Text('Other'),
             ),
           ],
-          onChanged: (val) {
-            if (val != null) {
-              setState(() {
-                _selectedService = val;
-              });
-            }
-          },
+          onChanged: isLoading
+              ? null
+              : (val) {
+                  if (val != null) {
+                    setState(() {
+                      _selectedService = val;
+                    });
+                  }
+                },
         ),
         const SizedBox(height: 18),
 
